@@ -1,5 +1,7 @@
 This project was created to help me rename files on my plex server. 
 
+**Disclaimer - The developer does not take responsibility for any loss of data or damages to hardware/software caused by the installation and/or use of this application. Backup files before using the renamer. **
+
 The application takes two values. The path for the series that you want to rename and a list of URLs attaining to the series.
 
 The path should contain all video files in sequential order. Sub folders will be skipped.
