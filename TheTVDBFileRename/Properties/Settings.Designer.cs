@@ -34,5 +34,17 @@ namespace TheTVDBFileRename.Properties {
                 this["APIKey"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool EnableTranslation {
+            get {
+                return ((bool)(this["EnableTranslation"]));
+            }
+            set {
+                this["EnableTranslation"] = value;
+            }
+        }
     }
 }

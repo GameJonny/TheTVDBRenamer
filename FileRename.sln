@@ -5,6 +5,8 @@ VisualStudioVersion = 17.6.33801.468
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheTVDBFileRename", "TheTVDBFileRename\TheTVDBFileRename.csproj", "{DC964F46-7E39-4A14-A02C-7D9319EC763C}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "TheTVDBFileRename-Setup", "TheTVDBFileRename-Setup\TheTVDBFileRename-Setup.vdproj", "{229CD3DB-E32F-4FDF-9C26-E13A4665EA26}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,8 @@ Global
 		{DC964F46-7E39-4A14-A02C-7D9319EC763C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC964F46-7E39-4A14-A02C-7D9319EC763C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC964F46-7E39-4A14-A02C-7D9319EC763C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{229CD3DB-E32F-4FDF-9C26-E13A4665EA26}.Debug|Any CPU.ActiveCfg = Debug
+		{229CD3DB-E32F-4FDF-9C26-E13A4665EA26}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
