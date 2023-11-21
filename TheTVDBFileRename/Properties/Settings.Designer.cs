@@ -25,7 +25,7 @@ namespace TheTVDBFileRename.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("876d84cd3emsha2b9c4b9a182e91p1509c4jsn13535fd417e6")]
         public string APIKey {
             get {
                 return ((string)(this["APIKey"]));

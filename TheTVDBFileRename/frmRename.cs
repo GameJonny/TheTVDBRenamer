@@ -23,13 +23,13 @@ using System.Diagnostics;
 
 namespace TheTVDBFileRename
 {
-    public partial class Form1 : Form
+    public partial class frmRename : Form
     {
-        public Form1()
+        public frmRename()
         {
             InitializeComponent();
-            
-           
+
+            cbxTranlate.Checked = Properties.Settings.Default.EnableTranslation;
         }
 
 
@@ -37,6 +37,11 @@ namespace TheTVDBFileRename
         {
             try
             {
+                lblUpdate.Text = string.Empty;
+                pbUpdate.Text = string.Empty;
+                pbUpdate.Value = 0;
+                Application.DoEvents();
+
                 string key = Properties.Settings.Default.APIKey;
                 if (string.IsNullOrEmpty(key) && Properties.Settings.Default.EnableTranslation)
                 {
@@ -96,13 +101,21 @@ namespace TheTVDBFileRename
                     //now get all of the files as string array
                     string[] filenames = (from f in orderedFiles select f.FullName).ToArray();
 
+                    int incroment = 100/ dt.Rows.Count;
+
+                    incroment = (int)Math.Round((double)incroment);
+
                     for (int i = 0; i < dt.Rows.Count; i++)
                     {
-                        if (filenames.Length < i)
+                        if (filenames.Count() < i)
                             continue;
 
                         //Get the current file name
                         string fileName = filenames[i];
+
+                        lblUpdate.Text = Path.GetFileName(fileName);
+                        pbUpdate.Text = Path.GetFileName(fileName);
+                        Application.DoEvents();
 
                         //Get the episode data row
                         DataRow episode = dt.Rows[i];
@@ -113,7 +126,14 @@ namespace TheTVDBFileRename
                         //Episode title may need to translate
                         string episodeTitle = episode[1].ToString().Trim();
 
-                        bool translate = false;
+                        string file_EpisodeName = Path.GetFileNameWithoutExtension(fileName);
+
+                        bool translate = true;
+
+                        if (Properties.Settings.Default.EnableTranslation == null)
+                        {
+                            Properties.Settings.Default.EnableTranslation = this.cbxTranlate.Checked;
+                        }
                         
                         if (Properties.Settings.Default.EnableTranslation)
                         {
@@ -154,6 +174,7 @@ namespace TheTVDBFileRename
 
                         //get the season number
                         int seasonNo = int.Parse(episodeRef.Substring(1, episodeRef.IndexOf("E") - 1));
+                        int episodeNo = int.Parse(episodeRef.Substring(episodeRef.IndexOf("E")+1));
 
                         //Create the season folder
                         string newFolder = Path.Combine(dir, $"Season {seasonNo}");
@@ -163,17 +184,24 @@ namespace TheTVDBFileRename
                         //Format the file name
                         string newName = $"{episodeRef.Trim()} - {episodeTitle.Trim()}{Path.GetExtension(fileName)}";
 
+                        //string t = file_EpisodeName.Substring("Episode 20".Length).Trim();
+                        //newName = $"{episodeRef.Trim()} - {t.Trim()}{Path.GetExtension(fileName)}";
                         //Build the new path
                         string moveLoc = Path.Combine(newFolder, newName);
 
                         //Move the file with the new name to the season folder
                         File.Move(fileName, moveLoc);
+
+                        pbUpdate.Increment(incroment);
+                        Application.DoEvents();
                     }
 
                 }
 
 
-
+                lblUpdate.Text = "Complete";
+                pbUpdate.Text = "Complete";
+                Application.DoEvents();
 
             }
             catch { }
@@ -203,7 +231,7 @@ namespace TheTVDBFileRename
                                 HtmlDocument doc = new HtmlDocument();
                                 doc.LoadHtml(htmlCode);
                                 var headers = doc.DocumentNode.SelectNodes("//tr/th");
-
+                                
 
                                 if (table == null)
                                 {
@@ -268,8 +296,11 @@ namespace TheTVDBFileRename
 
         private async void btnRename_Click(object sender, EventArgs e)
         {
+            this.btnBrowse.Enabled = false;
+            this.btnRename.Enabled = false;
             try
             {
+                
                 await ReadFiles();
             }
             catch (Exception ex)
@@ -277,6 +308,8 @@ namespace TheTVDBFileRename
 
                MessageBox.Show(ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            this.btnBrowse.Enabled = true;
+            this.btnRename.Enabled = true;
         }
 
         private async Task<string> TranslateText(string text, string APIKey)

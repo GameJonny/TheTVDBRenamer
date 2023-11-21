@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="APIKey" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">876d84cd3emsha2b9c4b9a182e91p1509c4jsn13535fd417e6</Value>
     </Setting>
     <Setting Name="EnableTranslation" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
