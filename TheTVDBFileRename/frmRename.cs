@@ -110,8 +110,12 @@ namespace TheTVDBFileRename
                         if (filenames.Count() < i)
                             continue;
 
+                    
+
                         //Get the current file name
                         string fileName = filenames[i];
+
+
 
                         lblUpdate.Text = Path.GetFileName(fileName);
                         pbUpdate.Text = Path.GetFileName(fileName);
@@ -125,6 +129,10 @@ namespace TheTVDBFileRename
 
                         //Episode title may need to translate
                         string episodeTitle = episode[1].ToString().Trim();
+                        if(episodeTitle.EndsWith("mid-"))
+                        {
+                            episodeTitle = episodeTitle.Substring(0, episodeTitle.Length - 4).Trim();
+                        }
 
                         string file_EpisodeName = Path.GetFileNameWithoutExtension(fileName);
 
@@ -204,7 +212,9 @@ namespace TheTVDBFileRename
                 Application.DoEvents();
 
             }
-            catch { }
+            catch (Exception x) {
+                Debug.WriteLine(x.ToString());
+            }
         }
 
         private static IEnumerable<char> GetCharsInRange(string text, int min, int max)
