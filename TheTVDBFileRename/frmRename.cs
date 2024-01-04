@@ -184,10 +184,15 @@ namespace TheTVDBFileRename
                         int seasonNo = int.Parse(episodeRef.Substring(1, episodeRef.IndexOf("E") - 1));
                         int episodeNo = int.Parse(episodeRef.Substring(episodeRef.IndexOf("E")+1));
 
+                        string newFolder = dir;
+
                         //Create the season folder
-                        string newFolder = Path.Combine(dir, $"Season {seasonNo}");
-                        if (!Directory.Exists(newFolder))
-                            Directory.CreateDirectory(newFolder);
+                        if (Path.GetFileName(dir).ToLower() != $"season {seasonNo}")
+                        {
+                             newFolder = Path.Combine(newFolder, $"Season {seasonNo}");
+                            if (!Directory.Exists(newFolder))
+                                Directory.CreateDirectory(newFolder);
+                        }
 
                         //Format the file name
                         string newName = $"{episodeRef.Trim()} - {episodeTitle.Trim()}{Path.GetExtension(fileName)}";
@@ -228,7 +233,7 @@ namespace TheTVDBFileRename
             {
                 DataTable table = null;
 
-                foreach (var url in urls)
+                foreach (var url  in urls)
                 {
                     using (HttpClient client = new HttpClient())
                     {
