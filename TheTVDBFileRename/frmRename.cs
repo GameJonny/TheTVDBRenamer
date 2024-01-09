@@ -214,6 +214,7 @@ namespace TheTVDBFileRename
 
                 lblUpdate.Text = "Complete";
                 pbUpdate.Text = "Complete";
+                pbUpdate.Increment(100);
                 Application.DoEvents();
 
             }
