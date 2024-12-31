@@ -20,6 +20,7 @@ using System.Web;
 using System.Web.UI.WebControls;
 using System.Net;
 using System.Diagnostics;
+using System.Threading;
 
 namespace TheTVDBFileRename
 {
@@ -203,7 +204,19 @@ namespace TheTVDBFileRename
                         string moveLoc = Path.Combine(newFolder, newName);
 
                         //Move the file with the new name to the season folder
-                        File.Move(fileName, moveLoc);
+                        for (int x = 0; x < 10; x++)
+                        {
+                            try
+                            {
+                                File.Move(fileName, moveLoc);
+                                break;
+                            }
+                            catch (Exception)
+                            {
+                                Thread.Sleep(1000);
+                                throw;
+                            }
+                        }
 
                         pbUpdate.Increment(incroment);
                         Application.DoEvents();
@@ -234,8 +247,13 @@ namespace TheTVDBFileRename
             {
                 DataTable table = null;
 
+               
                 foreach (var url  in urls)
                 {
+                    bool myanimelist = url.ToLower().Contains("myanimelist");
+                    
+
+
                     using (HttpClient client = new HttpClient())
                     {
                         using (HttpResponseMessage response = await client.GetAsync(url))
@@ -246,7 +264,7 @@ namespace TheTVDBFileRename
 
                                 HtmlDocument doc = new HtmlDocument();
                                 doc.LoadHtml(htmlCode);
-                                var headers = doc.DocumentNode.SelectNodes("//tr/th");
+                                var headers = myanimelist ? doc.DocumentNode.SelectNodes("//thead")  : doc.DocumentNode.SelectNodes("//tr/th");
                                 
 
                                 if (table == null)
@@ -255,20 +273,53 @@ namespace TheTVDBFileRename
                                     foreach (HtmlNode header in headers)
                                     {
                                         string txt = header.InnerText;
-                                        txt = txt.Replace("&times;", "x");
-                                        txt = txt.Replace("&#039;", "'");
-                                        txt = txt.Replace("season finale", "").Trim();
-                                        table.Columns.Add(txt); // create columns from th
-                                                                // select rows with td elements 
+
+                                        if (myanimelist)
+                                        {
+                                            string[] hdrs = txt.Split(new string[] { "\r\n", "\r", "\n" },StringSplitOptions.RemoveEmptyEntries);
+
+                                            foreach (var hdr in hdrs)
+                                            {
+                                                txt = hdr.Trim();
+                                                if (string.IsNullOrWhiteSpace(txt)) continue;
+
+                                                txt = txt.Replace("&times;", "x");
+                                                txt = txt.Replace("&#039;", "'");
+                                                txt = txt.Replace("season finale", "").Trim();
+                                                table.Columns.Add(txt); 
+                                            }
+                                        }
+                                        else
+                                        {
+                                            txt = txt.Replace("&times;", "x");
+                                            txt = txt.Replace("&#039;", "'");
+                                            txt = txt.Replace("season finale", "").Trim();
+                                            table.Columns.Add(txt); // create columns from th
+                                                                    // select rows with td elements 
+                                        }
+
+
                                     }
 
                                 }
 
-                                foreach (var row in doc.DocumentNode.SelectNodes("//tr[td]"))
+                                if (myanimelist)
                                 {
-                                    var txt = row.SelectNodes("td").Select(td => td.InnerText.Replace("&times;", "x").Replace("&#039;", "'").Replace("season finale", "").Replace("series finale", "").Trim());
-                                    table.Rows.Add(txt.ToArray());
+                                    var rows = doc.DocumentNode.SelectNodes("//tbody/tr");
+                                    foreach (var row in rows)
+                                    {
+
+                                    }
                                 }
+                                else
+                                {
+                                    foreach (var row in doc.DocumentNode.SelectNodes("//tr[td]"))
+                                    {
+                                        var txt = row.SelectNodes("td").Select(td => td.InnerText.Replace("&times;", "x").Replace("&#039;", "'").Replace("season finale", "").Replace("series finale", "").Trim());
+                                        table.Rows.Add(txt.ToArray());
+                                    }
+                                }
+                                   
 
 
 
